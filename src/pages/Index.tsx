@@ -11,6 +11,12 @@ export default function Index() {
 
   const handleSwipe = useCallback(
     (dir: Direction) => {
+      // Require wallet connection before any moves
+      if (!wallet.address) {
+        wallet.setError("Connect wallet to play");
+        return;
+      }
+
       if (game.gameOver) return;
       // For MetaMask: block while sending. For Privy: never block (optimistic).
       if (wallet.loginMethod === "metamask" && wallet.sending) return;
@@ -27,7 +33,7 @@ export default function Index() {
         });
       }
     },
-    [game.gameOver, game.doMove, wallet.address, wallet.sendMoveTx, wallet.sending, wallet.loginMethod]
+    [game.gameOver, game.doMove, wallet.address, wallet.sendMoveTx, wallet.sending, wallet.loginMethod, wallet.setError]
   );
 
   return (
@@ -67,6 +73,15 @@ export default function Index() {
         />
 
         {/* Overlays */}
+        {!wallet.address && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm rounded-lg">
+            <span className="text-lg font-bold mb-3 text-center px-4">Connect wallet to play</span>
+            <span className="text-xs text-muted-foreground text-center px-4">
+              Use email or MetaMask to get started
+            </span>
+          </div>
+        )}
+
         {game.gameOver && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm rounded-lg">
             <span className="text-2xl font-bold mb-3">Game Over</span>
