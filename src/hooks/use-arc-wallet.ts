@@ -153,7 +153,6 @@ export function useArcWallet() {
                 showWalletUIs: false,
                 isCancellable: false,
               },
-              address,
             },
           );
 
