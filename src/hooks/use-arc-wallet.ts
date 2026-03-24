@@ -165,7 +165,10 @@ export function useArcWallet() {
         } catch (err: any) {
           console.error("Privy move tx error:", err);
           const raw = err?.shortMessage || err?.message || "Transaction failed";
-          setError(raw.length > 140 ? `${raw.slice(0, 140)}...` : raw);
+          // Don't display "Missing or invalid parameters" error to user
+          if (!raw.includes("Missing or invalid parameters")) {
+            setError(raw.length > 140 ? `${raw.slice(0, 140)}...` : raw);
+          }
           return null;
         }
       });
